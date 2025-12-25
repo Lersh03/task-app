@@ -50,6 +50,9 @@ export function useAuth(): UseAuthReturn {
   };
 
   const updateSessionState = async (newSession: any) => {
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/ca2021b5-3d6a-4da5-b83a-81f00abb1860',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hooks/useAuth.ts:54',message:'updateSessionState called',data:{newSessionUserId:newSession?.user?.id, newSessionEmail: newSession?.user?.email},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+    // #endregion
     setSession(newSession);
     setIsLoggedIn(!!newSession);
 
@@ -95,17 +98,17 @@ export function useAuth(): UseAuthReturn {
   };
 
   const handleGoogleLogin = async () => {
-    try {
-      await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/dashboard`,
-        },
-      });
-    } catch (error: any) {
-      setError(error.message);
-      console.error("Error with Google login:", error);
-    }
+    const { error, data } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        // Directs the flow to your new handler
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/ca2021b5-3d6a-4da5-b83a-81f00abb1860',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hooks/useAuth.ts:106',message:'handleGoogleLogin initiated',data:{redirectTo:`${window.location.origin}/auth/callback`,error:error?.message, data},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
+    if (error) console.error("Login error:", error.message);
   };
 
   const handleSignup = async () => {
@@ -148,6 +151,9 @@ export function useAuth(): UseAuthReturn {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      // #region agent log
+      fetch('http://127.0.0.1:7243/ingest/ca2021b5-3d6a-4da5-b83a-81f00abb1860',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hooks/useAuth.ts:149',message:'onAuthStateChange triggered',data:{event:_event,session:session?.user?.id},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+      // #endregion
       updateSessionState(session);
     });
 
