@@ -23,7 +23,7 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
     } else if (!isLoggedIn && !isPublicRoute) {
       router.replace(DEFAULT_PUBLIC_ROUTE);
     }
-  };
+  },
   if (!isReady) return <LoadingSkeleton />;
 
   return <>{children}</>;
