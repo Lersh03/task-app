@@ -22,8 +22,10 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
       router.replace(DEFAULT_AUTHENTICATED_ROUTE);
     } else if (!isLoggedIn && !isPublicRoute) {
       router.replace(DEFAULT_PUBLIC_ROUTE);
+    } else {
+      setIsReady(true); // This tells the app it's safe to show the content
     }
-  };
+  }, [isLoading, isLoggedIn, pathname, router]); 
   if (!isReady) return <LoadingSkeleton />;
 
   return <>{children}</>;
